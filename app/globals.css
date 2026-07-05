@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Blueprint Design Tokens ─────────────────────────────────────────────── */
+:root {
+  --blueprint-navy:    #0A2F4E;
+  --blueprint-white:   #E8F1F8;
+  --schematic-orange:  #FF6B35;
+  --steel-blue:        #7FA8C9;
+  --ink:               #13293D;
+  --status-green:      #4ADE80;
+
+  /* shadcn/ui slots mapped to blueprint palette */
+  --background:        209 80% 17%;   /* #0A2F4E */
+  --foreground:        210 50% 95%;   /* #E8F1F8 */
+  --card:              209 75% 13%;   /* slightly darker navy panel */
+  --card-foreground:   210 50% 95%;
+  --popover:           209 80% 10%;
+  --popover-foreground:210 50% 95%;
+  --primary:           18  100% 60%;  /* #FF6B35 schematic-orange */
+  --primary-foreground:209 80% 17%;
+  --secondary:         209 30% 22%;
+  --secondary-foreground:210 50% 85%;
+  --muted:             209 40% 18%;
+  --muted-foreground:  210 30% 60%;   /* steel-blue-ish */
+  --accent:            18  100% 60%;
+  --accent-foreground: 209 80% 17%;
+  --destructive:       0   70% 50%;
+  --destructive-foreground: 210 40% 98%;
+  --border:            210 25% 35%;   /* steel-blue at low opacity context */
+  --input:             209 50% 20%;
+  --ring:              18  100% 60%;  /* orange focus ring */
+  --radius:            0.25rem;       /* tighter radius = more schematic */
+
+  /* Chart colors stay neutral */
+  --chart-1: 18  100% 60%;
+  --chart-2: 210 30% 60%;
+  --chart-3: 197 37% 45%;
+  --chart-4: 43  60% 60%;
+  --chart-5: 160 50% 55%;
+}
+
+/* ─── Base Layer ──────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: var(--blueprint-navy);
+    color: var(--blueprint-white);
+  }
+  /* Consistent focus ring — schematic-orange, no glow */
+  :focus-visible {
+    outline: 2px solid var(--schematic-orange);
+    outline-offset: 3px;
+  }
+}
+
+/* ─── Graph-paper background texture ─────────────────────────────────────── */
+.graph-paper-bg {
+  background-image:
+    linear-gradient(rgba(127, 168, 201, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 168, 201, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─── Animations ──────────────────────────────────────────────────────────── */
+
+/* Connector-line dash flow — only plays when motion is OK */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+/* Status-green pulse — scale only, no box-shadow/glow */
+@keyframes status-pulse {
+  0%, 100% { transform: scale(1);   opacity: 1;   }
+  50%       { transform: scale(1.5); opacity: 0.7; }
+}
+
+.animate-dash-flow {
+  animation: dash-flow 3s linear infinite;
+}
+
+.animate-status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Honour prefers-reduced-motion — disable animated decorations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-dash-flow,
+  .animate-status-pulse {
+    animation: none;
+  }
+}
+
+/* ─── Accordion (shadcn/ui) ───────────────────────────────────────────────── */
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
+}
