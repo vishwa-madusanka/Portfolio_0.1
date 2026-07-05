@@ -13,28 +13,62 @@ const CONTACT_INFO = [
 ]
 
 const SOCIALS = [
-  { label: "github",   href: "https://github.com/vishwa-madusanka" },
-  { label: "linkedin", href: "#"                                    },
+  { label: "github",   href: "https://github.com/vishwa-madusanka"                      },
+  // TODO: add real LinkedIn URL — replace the placeholder below
+  { label: "linkedin", href: "https://www.linkedin.com/in/vishwa-madusanka"             },
 ]
 
 const inputClass =
   "w-full font-mono text-sm text-[#E8F1F8] placeholder:text-[#7FA8C9] bg-transparent border border-[#7FA8C9] rounded-sm px-3 py-2.5 focus:outline-none focus:border-[#FF6B35] focus:ring-1 focus:ring-[#FF6B35] transition-colors"
 
 export default function ContactSection() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" })
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    website: "",   // honeypot — never shown to real users
+  })
   const [sending, setSending] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSending(true)
-    await new Promise((r) => setTimeout(r, 900))
-    setSending(false)
-    toast({
-      title: "Message sent",
-      description: "I'll get back to you soon.",
-    })
-    setFormData({ name: "", email: "", message: "" })
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        toast({
+          title: "Message sent",
+          description: "I'll get back to you soon.",
+        })
+        // Clear form only on success — preserve content on failure
+        setFormData({ name: "", email: "", message: "", website: "" })
+      } else {
+        const data = await res.json().catch(() => ({}))
+        toast({
+          title: "Couldn't send that",
+          description:
+            (data as { error?: string }).error ??
+            "Try emailing me directly at vishwamadusanka1022@gmail.com",
+          variant: "destructive",
+        })
+      }
+    } catch {
+      // Network error — no connection to the API route
+      toast({
+        title: "Couldn't send that",
+        description: "Network error — try emailing me directly at vishwamadusanka1022@gmail.com",
+        variant: "destructive",
+      })
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -52,7 +86,7 @@ export default function ContactSection() {
           <h2 className="font-mono text-sm text-[#7FA8C9] mb-1">// contact</h2>
           <p className="font-display text-3xl font-semibold text-[#E8F1F8]">Reach Out</p>
           <p className="font-sans text-[#7FA8C9] mt-2 max-w-2xl">
-            Have a project in mind or want to talk distributed systems? I'm usually reachable.
+            Have a project in mind or want to talk distributed systems? I&apos;m usually reachable.
           </p>
         </motion.div>
 
@@ -75,6 +109,19 @@ export default function ContactSection() {
               </div>
 
               <form onSubmit={handleSubmit} className="px-5 py-5 space-y-4">
+
+                {/* Honeypot — hidden from real users, bots fill it in */}
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  className="hidden"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
+
                 <div>
                   <label htmlFor="contact-name" className="font-mono text-[10px] text-[#7FA8C9] block mb-1.5">
                     name
@@ -196,7 +243,7 @@ export default function ContactSection() {
           style={{ borderColor: "rgba(127,168,201,0.25)" }}
         >
           <span className="font-sans text-sm text-[#7FA8C9]">
-            © 2025 Vishwa Wijekoon
+            © 2026 Vishwa Wijekoon
           </span>
           <span className="font-mono text-xs text-[#7FA8C9] opacity-60">
             // built at SLIIT · Sri Lanka
