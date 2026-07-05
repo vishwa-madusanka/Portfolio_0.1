@@ -5,13 +5,22 @@ import SkillsSection from "@/components/sections/skills-section"
 import CertificationsSection from "@/components/sections/certifications-section"
 import ContactSection from "@/components/sections/contact-section"
 import Navigation from "@/components/navigation"
+import LiveGitHubWidget from "@/components/widgets/live-github-widget"
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-x-hidden" style={{ backgroundColor: "var(--blueprint-navy)", color: "var(--blueprint-white)" }}>
+    <main
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: "var(--blueprint-navy)", color: "var(--blueprint-white)" }}
+    >
       <Navigation />
       <HeroSection />
-      <AboutSection />
+      {/*
+        LiveGitHubWidget is an async Server Component. Pass it as a slot prop
+        so it can be rendered inside AboutSection (a Client Component) without
+        violating the Server/Client boundary.
+      */}
+      <AboutSection githubWidget={<LiveGitHubWidget />} />
       <ProjectsSection />
       <SkillsSection />
       <CertificationsSection />

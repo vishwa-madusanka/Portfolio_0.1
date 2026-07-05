@@ -15,10 +15,10 @@ const SERVICES = [
 /* ─── Geometry constants (SVG viewport: 800 × 500) ─────────────────────────── */
 const CX = 400   // centre X
 const CY = 250   // centre Y
-const ORBIT = 175 // radius to peripheral node centres
-const W_C = 220  // central node width
+const ORBIT = 185 // radius to peripheral node centres
+const W_C = 260  // central node width — wide enough for subtitle text
 const H_C = 90   // central node height
-const W_P = 170  // peripheral node width
+const W_P = 175  // peripheral node width
 const H_P = 72   // peripheral node height
 
 function polarToXY(angleDeg: number, radius: number) {
@@ -148,7 +148,7 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center graph-paper-bg overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center graph-paper-bg overflow-hidden pt-16"
     >
       {/* ── Desktop / tablet diagram ─────────────────────────────────────── */}
       <div className="hidden sm:block w-full max-w-4xl mx-auto px-4">
@@ -168,9 +168,9 @@ export default function HeroSection() {
               <path
                 key={svc.id + "-line"}
                 d={connectorPath(svc.angle)}
-                stroke="var(--steel-blue)"
-                strokeWidth={1}
-                strokeDasharray="6 4"
+                stroke="#A8C8DF"
+                strokeWidth={1.5}
+                strokeDasharray="8 5"
                 fill="none"
                 className="animate-dash-flow"
               />
@@ -204,9 +204,9 @@ export default function HeroSection() {
             {/* Role sub-label */}
             <text
               x={CX}
-              y={CY + 14}
+              y={CY + 16}
               textAnchor="middle"
-              fontSize={11}
+              fontSize={10}
               fontFamily="var(--font-ibm-plex-mono)"
               fill="var(--steel-blue)"
             >
@@ -311,20 +311,6 @@ export default function HeroSection() {
           </div>
         </motion.div>
       </div>
-
-      {/* ── Scroll indicator ────────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        aria-hidden="true"
-      >
-        <div className="flex flex-col items-center gap-1">
-          <span className="font-mono text-[10px] text-[#7FA8C9] tracking-widest">SCROLL</span>
-          <div className="w-px h-8 border-l border-dashed border-[#7FA8C9]" />
-        </div>
-      </motion.div>
     </section>
   )
 }
